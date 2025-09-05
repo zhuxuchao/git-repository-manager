@@ -1,24 +1,31 @@
 package com.zhuxc.tools.gitlab;
 
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
+import javafx.beans.value.ObservableValue;
+import javafx.beans.value.ObservableValueBase;
 import javafx.geometry.Insets;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.gitlab4j.api.GitLabApi;
 import org.gitlab4j.api.GitLabApiException;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.prefs.Preferences;
 
 public class SettingsView extends VBox {
 
-    private final GitLabService gitLabService;
     private TextField gitLabUrlField;
     private PasswordField tokenField;
     private CheckBox saveConfigCheckbox;
-
-    public SettingsView(GitLabService gitLabService) {
-        this.gitLabService = gitLabService;
+    public SettingsView() {
         initialize();
     }
 
@@ -89,13 +96,11 @@ public class SettingsView extends VBox {
         }
 
         try {
+            GitLabApi gitLabApi = GitlabClientFactory.build(url, token);
             // 测试连接
-            GitLabApi gitLabApi = new GitLabApi(url, token);
-            gitLabApi.getProjectApi().getProjects(1, 1); // 获取一个项目测试连接
-
+            gitLabApi.getProjectApi().getProjects("xf-",1, 1);
             // 更新服务
-            gitLabService.updateConnection(url, token);
-
+            // GitlabClientFactory.setGitlabApi(gitLabApi);
             showStatus("Connection successful!", "success");
         } catch (GitLabApiException e) {
             showStatus("Connection failed: " + e.getMessage(), "error");
@@ -121,10 +126,11 @@ public class SettingsView extends VBox {
                 prefs.remove("gitlab_url");
                 prefs.remove("gitlab_token");
             }
-
+            GitLabApi gitLabApi = GitlabClientFactory.build(url, token);
+            // 测试连接
+            gitLabApi.getProjectApi().getProjects("xf-",1, 1);
             // 更新服务
-            gitLabService.updateConnection(url, token);
-
+            GitlabClientFactory.setGitlabApi(gitLabApi);
             showStatus("Settings saved successfully!", "success");
         } catch (Exception e) {
             showStatus("Error saving settings: " + e.getMessage(), "error");

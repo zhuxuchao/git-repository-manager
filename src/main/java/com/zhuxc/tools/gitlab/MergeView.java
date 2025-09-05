@@ -1,17 +1,21 @@
 package com.zhuxc.tools.gitlab;
 
 import javafx.geometry.Insets;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 public class MergeView extends VBox {
-    private GitLabService gitLabService;
     private ComboBox<String> sourceBranchSelector;
     private ComboBox<String> targetBranchSelector;
     private ListView<String> reposList;
 
-    public MergeView(GitLabService gitLabService) {
-        this.gitLabService = gitLabService;
+    public MergeView() {
         getStyleClass().add("merge-view");
         setSpacing(15);
         setPadding(new Insets(20));
@@ -61,4 +65,5 @@ public class MergeView extends VBox {
         // 添加到布局
         getChildren().addAll(title, branchGrid, reposLabel, reposList, buttonBox);
     }
+
 }
